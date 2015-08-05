@@ -138,6 +138,9 @@ func (c *Container) Create(imageName string) (*dockerclient.Container, error) {
 		if err != nil {
 			return nil, err
 		}
+		c.service.context.Project.Notify(project.CONTAINER_CREATED, c.service.Name(), map[string]string{
+			"name": c.Name(),
+		})
 	}
 
 	return container, err
@@ -199,6 +202,10 @@ func (c *Container) Up(imageName string) error {
 		logrus.Debugf("Starting container: %s: %#v", container.Id)
 		err := c.client.StartContainer(container.Id, nil)
 		return err
+
+		c.service.context.Project.Notify(project.CONTAINER_STARTED, c.service.Name(), map[string]string{
+			"name": c.Name(),
+		})
 	}
 
 	return nil
